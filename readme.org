@@ -1,0 +1,2 @@
+* Object storage with Ceph
+* Install Guide
