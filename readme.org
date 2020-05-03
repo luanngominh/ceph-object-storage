@@ -1,2 +1,5 @@
 * Object storage with Ceph
+* Kernel tunnint
+https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
+
 * Install Guide
