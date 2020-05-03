@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |config|
     config.memory = 4096
-    config.cpus = 1
+    config.cpus = 2
   end
 
   (1..3).each do |i|
