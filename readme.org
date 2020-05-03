@@ -1,9 +1,10 @@
 * Object storage with Ceph
 * About vagrant file
- - Provision three vm run centos 7
+ - Provision three VMs run centos 7
  - Update and upgrade server
- - Tunning kernel for object storage <br>
-   References: <br>
-   https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
+ - Tunning kernel for object storage
 
 * Install Guide
+
+* References
+  - https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
