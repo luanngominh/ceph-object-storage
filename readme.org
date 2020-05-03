@@ -2,7 +2,7 @@
 * About vagrant file
  - Provision three vm run centos 7
  - Update and upgrade server
- - Tunning kernel for object storage
+ - Tunning kernel for object storage 
    References: 
    https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
 
