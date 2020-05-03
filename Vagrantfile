@@ -11,15 +11,15 @@ Vagrant.configure("2") do |config|
     config.cpus = 2
   end
 
-  (1..3).each do |i|
+  (1..1).each do |i|
     config.vm.define "#{i}.ceph.com" do |node|
       node.vm.box = base_box
       node.vm.hostname = "#{i}.ceph.com"
       node.vm.network "private_network", ip: "172.16.0.2#{i}"
 
       node.vm.provision "shell", inline: <<-SHELL
-          apt-get update -y
-          apt-get upgrade -y
+          yum update -y
+          yum upgrade -y
 
           echo '
           # maximum number of open files/file descriptors
