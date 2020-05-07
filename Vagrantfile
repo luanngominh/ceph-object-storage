@@ -7,27 +7,25 @@ memory = 4096
 cpus = 1
 
 Vagrant.configure("2") do |config|
-  (1..1).each do |i|
+  (1..3).each do |i|
     config.vm.define "#{i}.ceph.com" do |node|
       # Define extra disk
       disk1=2*i - 1
       disk2=2*i
 
       node.vm.provider "virtualbox" do |v|
-        v.name = "#{i}.ceph.com"
+        v.name = "ceph-#{i}"
         v.memory = memory
         v.cpus = cpus
 
-        (1..2).each do |disk_index|
-          file_to_disk="#{disk_path}/disk_#{i}_#{disk_index}.vmdk"
-          unless File.exist?(file_to_disk)
-            v.customize [ "createmedium", "disk", "--filename", file_to_disk,
-                          "--format", "vmdk", "--size", 1024 * 2 ]
-          end
-          v.customize [ "storageattach", "#{i}.ceph.com" , "--storagectl",
-                        "IDE", "--port", i, "--device", 0, "--type",
-                        "hdd", "--medium", file_to_disk]
+        file_to_disk="#{disk_path}/disk_#{i}.vmdk"
+        unless File.exist?(file_to_disk)
+          v.customize [ "createmedium", "disk", "--filename", file_to_disk,
+                        "--format", "vmdk", "--size", 1024 * 2 ]
         end
+        v.customize [ "storageattach", "ceph-#{i}" , "--storagectl",
+                     "IDE", "--port", 1, "--device", 0, "--type",
+                      "hdd", "--medium", file_to_disk]
       end
 
       node.vm.box = base_box
