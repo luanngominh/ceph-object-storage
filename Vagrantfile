@@ -8,7 +8,7 @@ cpus = 1
 
 Vagrant.configure("2") do |config|
   (1..3).each do |i|
-    config.vm.define "#{i}.ceph.com" do |node|
+    config.vm.define "host-#{i}" do |node|
       # Define extra disk
       disk1=2*i - 1
       disk2=2*i
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
         file_to_disk="#{disk_path}/disk_#{i}.vmdk"
         unless File.exist?(file_to_disk)
           v.customize [ "createmedium", "disk", "--filename", file_to_disk,
-                        "--format", "vmdk", "--size", 1024 * 2 ]
+                        "--format", "vmdk", "--size", 1024 * 4 ]
         end
         v.customize [ "storageattach", "ceph-#{i}" , "--storagectl",
                      "IDE", "--port", 1, "--device", 0, "--type",
@@ -29,17 +29,21 @@ Vagrant.configure("2") do |config|
       end
 
       node.vm.box = base_box
-      node.vm.hostname = "#{i}.ceph.com"
+      node.vm.hostname = "storage-#{i}.ceph.com"
       node.vm.network "private_network", ip: "172.16.0.2#{i}"
 
       node.vm.provision "shell", inline: <<-SHELL
       yum update -y
       yum upgrade -y
 
-      echo 172.16.0.21    1.ceph.com >> /etc/hosts
-      echo 172.16.0.22    2.ceph.com >> /etc/hosts
-      echo 172.16.0.23    3.ceph.com >> /etc/hosts
+      yum install ntp -y
 
+      rm -f /etc/localtime
+      ln -s /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
+
+      echo 172.16.0.21    storage-1.ceph.com >> /etc/hosts
+      echo 172.16.0.22    storage-2.ceph.com >> /etc/hosts
+      echo 172.16.0.23    storage-3.ceph.com >> /etc/hosts
       echo '
 # maximum number of open files/file descriptors
 fs.file-max = 4194303

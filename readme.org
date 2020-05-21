@@ -5,6 +5,52 @@
  - Tunning kernel for object storage
 
 * Install Guide
+1.
+sudo -i
+useradd cephadm && echo "CephAdm@123#" | passwd --stdin cephadm
+echo "cephadm ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/cephadm
+chmod 0440 /etc/sudoers.d/cephadm
+sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+reboot
+
+2.
+sudo su cephadm
+
+ssh-keygen
+ssh-copy-id cephadm@storage-1.ceph.com
+ssh-copy-id cephadm@storage-2.ceph.com
+ssh-copy-id cephadm@storage-3.ceph.com
+
+vi ~/.ssh/config
+Host storage-1
+   Hostname storage-1.ceph.com
+   User cephadm
+Host storage-2
+   Hostname storage-2.ceph.com
+   User cephadm
+Host storage-3
+   Hostname storage-3.ceph.com
+   User cephadm
+
+chmod 644 ~/.ssh/config
+
+3. Install ceph deploy
+sudo rpm -Uvh https://download.ceph.com/rpm-mimic/el7/noarch/ceph-release-1-1.el7.noarch.rpm
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum update -y && sudo yum install ceph-deploy python2-pip  -y
+
+4. Init ceph deploy
+mkdir ceph_cluster
+cd ceph_cluster
+ceph-deploy new 
+
+vi ceph.conf
+public_network = 172.16.0.0/24
+
+ceph-deploy install 1.ceph.com 2.ceph.com 3.ceph.com
+
+5. create mon
+ceph-deploy mon create 1.ceph.com 2.ceph.com 3.ceph.com
 
 * References
   - https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
