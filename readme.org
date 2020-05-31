@@ -60,7 +60,6 @@ ceph-deploy mon create ceph-01 ceph-02 ceph-03
 ceph-deploy gatherkeys ceph-01
 ceph-deploy admin ceph-01 ceph-02 ceph-03
 
-
 Install mgr
 ceph-deploy mgr create ceph-01 ceph-02
 
@@ -119,21 +118,67 @@ S3
 ceph-deploy install --rgw ceph-01 ceph-02 ceph-03
 ceph-deploy rgw create ceph-01 ceph-02 ceph-03
 
+add vi /etc/ceph/ceph.conf
+[client.rgw.ceph-01]
+rgw frontends = civetweb port=80
+
+[client.rgw.ceph-02]
+rgw frontends = civetweb port=80
+
+[client.rgw.ceph-03]
+rgw frontends = civetweb port=80
+
+push config
+ceph-deploy --overwrite-conf config push ceph-01 ceph-02 ceph-03
+
+restart radosgw on ceph-01 ceph-02 ceph-03
+systemctl status ceph-radosgw.target
+systemctl restart ceph-radosgw.target
+systemctl status ceph-radosgw.target
+
 tao user
 radosgw-admin user create --uid=admin --display-name=admin --system
 radosgw-admin user create --uid=luanngominh --display-name=luanngominh --email=ngominhluanbox@gmail.com
 
 ceph dashboard set-rgw-api-ssl-verify False
 ceph dashboard set rgw-api-scheme http
-ceph dashboard set-rgw-api-access-key xx
-ceph dashboard set-rgw-api-secret-key xxx
+ceph dashboard set rgw-api-port 80
+ceph dashboard set-rgw-api-access-key <admin_access_key>
+ceph dashboard set-rgw-api-secret-key <admin_secret_key>
+
+
+config s3cmd
+yum install s3cmd -y
+cat << EOF> ~/.s3cfg
+[default]
+access_key = <access>
+secret_key = <secret>
+host_base = s3.meowing.site
+host_bucket = s3.meowing.site/%(bucket)
+multipart_chunk_size_mb = 15
+multipart_max_chunks = 10000
+socket_timeout = 300
+use_https = True
+check_ssl_certificate = False
+EOF
 
 Create pool
-ceph osd pool create volume-01 168
+ceph osd pool create volume-01 64
 
 Xoa pool
 ceph config set mon mon_allow_pool_delete true
+ceph osd pool delete volume-01 volume-01 --yes-i-really-really-mean-it
+
+
+RBD
+ceph osd pool create workspace-vol-01 64
+rbd pool init workspace-vol-01
+
+ceph auth get-or-create client.workspace mon 'profile rbd' osd 'profile rbd pool=workspace-vol-01'
+rbd create --size 10000 workspace-vol-01/data-01
+rbd ls smod | grepworkspace-vol-01
+rbd info workspace-vol-01/data-01
+rbd resize --size 20000 workspace-vol-01/data-01
 
 * References
   - https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf
-  - 
