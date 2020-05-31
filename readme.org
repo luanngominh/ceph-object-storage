@@ -1,8 +1,15 @@
 * Object storage with Ceph
-* About vagrant file
- - Provision three VMs run centos 7
+* Provision infrastructure
+** Using vagrant
+ - Init three VMs run centos 7
  - Update and upgrade server
  - Tunning kernel for object storage
+ - Provison: vagrant up
+
+** Using AWS EC2
+ - Terraform is prerequisite
+ - Init three VMs with 5 disk sized 30GB, root disk is not included
+ - Provision: go to folder terraform and type terraform up
 
 * Install Guide
 1.
