@@ -64,10 +64,12 @@ ceph-deploy admin ceph-01 ceph-02 ceph-03
 Install mgr
 ceph-deploy mgr create ceph-01 ceph-02
 
-install dashboard
+Enable dashboard and prometheus moudle: 
+ceph mgr module enable prometheus
+ceph mgr module enable dashboard
+
+If enable dashboard is failed, let's try install below package.
 yum install -y https://download.ceph.com/rpm-nautilus/el7/noarch/ceph-mgr-dashboard-14.2.9-0.el7.noarch.rpm
-
-
 
 
 6. osd
