@@ -72,6 +72,7 @@ yum install -y https://download.ceph.com/rpm-nautilus/el7/noarch/ceph-mgr-dashbo
 
 
 6. osd
+ceph-deploy disk list
 # xoa data
 ceph-deploy disk zap ceph-01 /dev/xvdb
 ceph-deploy disk zap ceph-01 /dev/xvdc
@@ -171,6 +172,25 @@ ceph osd pool delete volume-01 volume-01 --yes-i-really-really-mean-it
 
 
 RBD
+ceph osd pool create replicated 64
+ceph osd pool application enable replicated rbd
+rbd pool init replicated
+rbd create --size 20000 --pool replicated meocon-data
+
+# option
+# rbd feature disable replicated/meocon-data object-map fast-diff deep-flatten
+
+rbd map meocon-data --pool replicated
+
+ceph-deploy install workspace --release nautilus
+ceph-deploy admin workspaces
+
+on client
+rbd map meocon-data --pool replicated
+mount -t ext4 /dev/rbd0 /data
+
+
+RBD
 ceph osd pool create workspace-vol-01 64
 rbd pool init workspace-vol-01
 
@@ -179,6 +199,9 @@ rbd create --size 10000 workspace-vol-01/data-01
 rbd ls smod | grepworkspace-vol-01
 rbd info workspace-vol-01/data-01
 rbd resize --size 20000 workspace-vol-01/data-01
+
+Add osd node
+
 
 * References
   - https://min.io/resources/docs/MinIO-Throughput-Benchmarks-on-NVMe-SSD-8-Node.pdf

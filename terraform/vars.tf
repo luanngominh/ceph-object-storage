@@ -1,7 +1,7 @@
 variable "region" {
   type = string
   description = "Ceph is going to running on this region"
-  default = "ap-south-east-1"
+  default = "ap-southeast-1"
 }
 
 variable "aws_access_key_id" {
@@ -10,6 +10,6 @@ variable "aws_access_key_id" {
 }
 
 variable "aws_secret_access_key" {
-  type = "string"
+  type = string
   description = "AWS secret key"
 }
