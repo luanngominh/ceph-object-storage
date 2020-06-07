@@ -66,3 +66,7 @@ variable "disk_settings" {
     }
   ]
 }
+
+variable "ssh_key_private" {
+  type = string
+}

@@ -37,13 +37,27 @@ resource "aws_instance" "ceph" {
   provisioner "file" {
     source      = "bootstrap/bootstrap.sh"
     destination = "/tmp/bootstrap.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_ip}"
+      private_key = "${file(var.ssh_key_private)}"
+    }
   }
 
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/bootstrap.sh",
-      "bootstrap.sh ${var.number_of_instance} ${var.ceph_domain} ${count.index + 1}.${var.ceph_domain}",
+      "sudo /tmp/bootstrap.sh ${var.number_of_instance} ${var.ceph_domain} ${count.index + 1}.${var.ceph_domain}",
       "rm -f /tmp/script.sh",
     ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_ip}"
+      private_key = "${file(var.ssh_key_private)}"
+    }
   }
 }
