@@ -50,7 +50,7 @@ resource "aws_instance" "ceph" {
     inline = [
       "chmod +x /tmp/bootstrap.sh",
       "sudo /tmp/bootstrap.sh ${var.number_of_instance} ${var.ceph_domain} ${count.index + 1}.${var.ceph_domain}",
-      "rm -f /tmp/script.sh",
+      "rm -f /tmp/bootstrap.sh",
     ]
 
     connection {
