@@ -80,3 +80,8 @@ resource "aws_security_group" "allow-all-traffic-local" {
     Name = "allow-all-traffic-local"
   }
 }
+
+resource "aws_route_table_association" "route-public-subnet-associate" {
+  subnet_id = "${aws_subnet.ceph-vpc-public.id}"
+  route_table_id = "${aws_route_table.ceph-vpc-public-route.id}"
+}
