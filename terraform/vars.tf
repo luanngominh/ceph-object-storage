@@ -13,3 +13,23 @@ variable "aws_secret_access_key" {
   type = string
   description = "AWS secret key"
 }
+
+variable "number_of_disk" {
+  type = string
+  description = "Number of disk per instance"
+}
+
+variable "disk_size" {
+  type = string
+  description = "Disk capacity"
+}
+
+variable "instance_type" {
+  type = string
+  description = "Instance type"
+}
+
+variable "instance_ami" {
+  type = string
+  description = "Instance AMI"
+}
