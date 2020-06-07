@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 number_of_instance=$1
 ceph_domain=$2
 host_name=$3
@@ -68,3 +66,6 @@ sysctl -p
 
 yum update -y
 yum upgrade -y
+
+systemctl stop chronyd && systemctl disable chronyd
+yum install ntp -y
