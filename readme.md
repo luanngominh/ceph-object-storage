@@ -2,7 +2,7 @@
 # Provision infrastructure
 We use terraform to provision ceph server on aws EC2.
 * Put your public key at `terraform/bootstrap/public_key.pem`
-* Add aws credentials and path to your private key at `terraform/credentials.tfvars` which contain has pattern. Private key is used for provision server.
+* Add aws credentials and path to your private key at `terraform/credentials.tfvars` which contain has below pattern. Private key is used for provision server.
 ```
 aws_access_key_id = "xxxxxx"
 aws_secret_access_key = "yyyyyyyyyy"
