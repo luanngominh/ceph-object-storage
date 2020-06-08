@@ -1,17 +1,17 @@
-* Object storage with Ceph
-* Provision infrastructure
-** Using vagrant
- - Init three VMs run centos 7
- - Update and upgrade server
- - Tunning kernel for object storage
- - Provison: vagrant up
+# Object storage with Ceph
+# Provision infrastructure
+We use terraform to provision ceph server on aws EC2.
+* Put your public key at `terraform/bootstrap/public_key.pem`
+* Add aws credentials and path to your private `terraform/credentials.tfvars` which contain has pattern. Private key is used for provision server.
+```
+aws_access_key_id = "xxxxxx"
+aws_secret_access_key = "yyyyyyyyyy"
+ssh_key_private = "~/.ssh/id_rsa"
 
-** Using AWS EC2
- - Terraform is prerequisite
- - Init three VMs with 5 disk sized 30GB, root disk is not included
- - Provision: go to folder terraform and type terraform up
+```
+* Provision server by typing `make init` and then `make apply`
 
-* Install Guide
+# Install Guide
 1.
 useradd cephadm && echo "ji20jka" | passwd --stdin cephadm
 echo "cephadm ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/cephadm
