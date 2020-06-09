@@ -34,6 +34,32 @@ resource "aws_instance" "ceph" {
     Name = "ceph-${count.index + 1}"
   }
 
+  # Copy ntp config for ntp server
+  provisioner "file" {
+    source      = "bootstrap/1.ntp.conf"
+    destination = "/tmp/1.ntp.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_ip}"
+      private_key = "${file(var.ssh_key_private)}"
+    }
+  }
+
+  # Copy ntp config for ntp client
+  provisioner "file" {
+    source      = "bootstrap/2.ntp.conf"
+    destination = "/tmp/2.ntp.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_ip}"
+      private_key = "${file(var.ssh_key_private)}"
+    }
+  }
+
   provisioner "file" {
     source      = "bootstrap/bootstrap.sh"
     destination = "/tmp/bootstrap.sh"
@@ -49,7 +75,7 @@ resource "aws_instance" "ceph" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/bootstrap.sh",
-      "sudo /tmp/bootstrap.sh ${var.number_of_instance} ${var.ceph_domain} ${count.index + 1}.${var.ceph_domain}",
+      "sudo /tmp/bootstrap.sh ${var.number_of_instance} ${var.ceph_domain} ${count.index + 1} 1.13.1.0 255.255.255.0 1.13.1.2${count.index + 1}",
       "rm -f /tmp/bootstrap.sh",
     ]
 

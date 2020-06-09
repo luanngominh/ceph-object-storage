@@ -2,9 +2,26 @@
 
 number_of_instance=$1
 ceph_domain=$2
-host_name=$3
+current=$3
 
-hostnamectl set-hostname $host_name
+ntp_subnet=$4
+ntp_net_mask=$5
+ntp_server=$6
+
+hostnamectl set-hostname ${current}.${ceph_domain}
+
+# NTP
+if [[ $current == 1 ]]; then
+    cp /tmp/1.ntp.conf /etc/ntp.conf
+    sed -i 's|{{ SUBNET_IP }}|'${ntp_subnet}'|g' /etc/ntp.conf
+    sed -i 's|{{ NET_MASK }}|'${ntp_net_mask}'|g' /etc/ntp.conf
+else
+    cp /tmp/2.ntp.conf /etc/ntp.conf
+    sed -i 's|{{ INTERNAL_NTP_SERVER }}|'${ntp_server}'|g' /etc/ntp.conf
+fi
+
+rm -f /tmp/1.ntp.conf
+rm -f /tmp/2.ntp.conf
 
 echo -e "\n#ceph domain" >> /etc/hosts
 for ((c = 1; c < $number_of_instance+1; c++)); do
@@ -68,4 +85,4 @@ yum update -y
 yum upgrade -y
 
 systemctl stop chronyd && systemctl disable chronyd
-yum install ntp -y
+yum install ntp -y && systemctl enable ntp && systemctl start ntp
